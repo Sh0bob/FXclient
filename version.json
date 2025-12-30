@@ -1,7 +1,11 @@
 {
-    "version": "0.6.17",
-    "lastUpdated": "Dec 4",
+    "version": "0.6.18",
+    "lastUpdated": "Dec 30",
     "changes": [
-        "Fixes for game update v2.14.4"
+        "Updated custom lobbies to the latest version",
+        "When creating a custom lobby, you can now select a region where it will be created",
+        "The latency to the custom lobby server is displayed below the header in the custom lobby UI",
+        "Improved the propaganda blocking feature",
+        "Added automatic patches for the special custom lobby version (https://fxclient.github.io/custom-lobbies) which continues to serve its purpose of guaranteeing access to custom lobbies while allowing the regular version to quickly be updated to the latest Territorial.io version, neglecting the custom lobby patches if needed"
     ]
 }

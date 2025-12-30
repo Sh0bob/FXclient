@@ -1,10 +1,7 @@
-import ModUtils from '../modUtils.js';
+import ModUtils, { insert } from '../modUtils.js';
 
 // Custom lobby patches
-export default (/** @type {ModUtils} */ { insertCode, replaceCode, replaceRawCode, safeDictionary: dict, waitForMinification }) => {
-    
-    // temporarily disabled for new versions
-    return;
+export default (/** @type {ModUtils} */ { modifyCode, insertCode, replaceCode, replaceRawCode, safeDictionary: dict, waitForMinification }) => {
 
     // set player id correctly
     insertCode(`function aBG(aBE) {
@@ -28,9 +25,24 @@ export default (/** @type {ModUtils} */ { insertCode, replaceCode, replaceRawCod
             return __fx.customLobby.setActive(false);
         }`)
 
+    insertCode(`this.send = function(a, b) {
+        if (a !== 0) {c(a);}
+		d[a].send(b);
+	}; /* here */`, "__fx.customLobby.setSendFunction(this.send)")
+    // when a socket error occurs on the custom lobby socket
+    insertCode(`this.b = function(id, t) { /* here */ this.a.push(t); if (i.h === 8 && id === 0) {if (t === 4211) {f(t);} else {/*...*/}}};`, `id===1 && __fx.customLobby.isActive() && MenuManager.getState() !== 6 && __fx.customLobby.setActive(false);`, { dictionary: {MenuManager: dict.MenuManager, getState: dict.getState} })
+    // when leaving a game
+    modifyCode(`${insert(`if (__fx.customLobby.isActive() === false)`)} a.b.c();
+		d.e();
+		this.f = 0;
+		g.h();
+		i.j.setState(0);
+		MenuManager.setState(0);
+		${insert(`if (!__fx.customLobby.isActive()) `)} k.l.m(n);
+		${insert(`if (__fx.customLobby.isActive()) __fx.customLobby.rejoinLobby();
+            else`)} if (this.o === 2) {/*...*/}`)
+
     waitForMinification(() => {
-        replaceRawCode("this.send=function(socketId,data){aJE(socketId),aJ4[socketId].send(data)}",
-            "this.send=function(socketId,data){aJE(socketId),aJ4[socketId].send(data)},__fx.customLobby.setSendFunction(this.send)")
         replaceRawCode("b7.dH(a0),0===b7.size?aq.kt.aJJ(wR,3205):",
             "b7.dH(a0),0===b7.size?aq.kt.aJJ(wR,3205):__fx.customLobby.isCustomMessage(a0)||")
         // set the custom lobby to inactive when clicking the "Back" button on the connection screen or leaving the lobby
@@ -39,19 +51,6 @@ export default (/** @type {ModUtils} */ { insertCode, replaceCode, replaceRawCod
         replaceRawCode("function(){n.r(),bl.zf(),Sockets.s.ze(3240),n.o(5,5)}",
             `(__fx.customLobby.setLeaveFunction(() => {n.r(),bl.zf(),Sockets.s.ze(3240),__fx.customLobby.setActive(false),n.o(5,5)}),
             function(){n.r(),bl.zf(),Sockets.s.ze(3240),__fx.customLobby.setActive(false),n.o(5,5)})`)
-        // when a socket error occurs on the custom lobby socket
-        // TODO: Fix these after main WebSocket fix is confirmed working
-        /*
-        replaceRawCode("this.wQ=function(wR,d){if(8===i.pz&&0===wR)if(4211===d)wS(d);",
-            `this.wQ=function(wR,d){
-            wR===1 && __fx.customLobby.isActive() && ${dict.MenuManager}.${dict.getState}() !== 6 && __fx.customLobby.setActive(false);
-            if(8===i.pz&&0===wR)if(4211===d)wS(d);`)
-        // when leaving a game
-        replaceRawCode("this.wl=function(zs){a1.gZ||az.oO.a11.length||(az.oO.a11=az.a12.vd()),ap.ky.zt(),this.vH=0,bU.zu(),m.n.setState(0),aN.setState(0),zs||bJ.df.show(),2===this.a3D?i.ky.a3U():1===this.a3D?i.j(19):i.j(5,5)}",
-            `this.wl=function(zs){a1.gZ||az.oO.a11.length||(az.oO.a11=az.a12.vd()),
-            __fx.customLobby.isActive() === false && ap.ky.zt(),
-            this.vH=0,bU.zu(),m.n.setState(0),aN.setState(0),zs||bJ.df.show();
-            if (__fx.customLobby.isActive()) __fx.customLobby.rejoinLobby(); else 2===this.a3D?i.ky.a3U():1===this.a3D?i.j(19):i.j(5,5)}`)
         // do not display lobby UI
         replaceRawCode(`(sV.style.backdropFilter="blur(4px)",sV.style.webkitBackdropFilter="blur(4px)"),`,
             `(sV.style.backdropFilter="blur(4px)",sV.style.webkitBackdropFilter="blur(4px)"),
@@ -80,6 +79,5 @@ export default (/** @type {ModUtils} */ { insertCode, replaceCode, replaceRawCod
         replaceRawCode("1===a.b?this.gLobbyMaxJoin=this.gHumans:this.gLobbyMaxJoin=this.data.playerCount,this.maxPlayers=this.gLobbyMaxJoin,this.gBots=this.gLobbyMaxJoin-this.gHumans,this.sg=0,",
             `this.gLobbyMaxJoin = __fx.customLobby.isActive() ? Math.max(Math.min(__fx.customLobby.gameInfo.botCount, this.data.playerCount), this.gHumans) : 1===a.b?this.gLobbyMaxJoin=this.gHumans:this.gLobbyMaxJoin=this.data.playerCount,
             this.maxPlayers=this.gLobbyMaxJoin,this.gBots=this.gLobbyMaxJoin-this.gHumans,this.sg=0,`)
-            */
     });
 }

@@ -214,4 +214,6 @@ export function definePatch(callback) {
  * Helper for `modifyCode`
  * @param {string} code
 */
-export const insert = (code) => code.split(/\r?\n/g).map(l => "/*insert line:*/" + l).join("\n");
+export const insert = (code) => (
+    "\n" + code.split(/\r?\n/g).map(l => "/*insert line:*/" + l).join("\n") + "\n"
+);

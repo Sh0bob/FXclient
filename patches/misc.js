@@ -1,8 +1,14 @@
 import { definePatch, insert } from "../modUtils.js"
 import { styleText } from "node:util";
 
-export default definePatch(({ insertCode, modifyCode }) => {
+export default definePatch(({ insertCode, modifyCode, replaceCode }) => {
 
+  // Add FX Client version info to the game version window
+  modifyCode(`4, 1, new g(__L(), b.c + "<br>" + d.e.f("/changelog")
+    ${insert(` + "<br><br><b>" + "FX Client v" + __fx.version
+      + "<br><a href='https://discord.gg/dyxcwdNKwK' target='_blank'>FX Client Discord server</a>"
+      + "<br><a href='https://github.com/fxclient/FXclient' target='_blank'>Github repository</a></b>"`)} /*...*/)`)
+  
   // Hide propaganda popup
   insertCode(`/* here */
     a = b.c + 60 * 1000;
@@ -13,6 +19,9 @@ export default definePatch(({ insertCode, modifyCode }) => {
 			d = e.f + 1000 * 1;
 			return;
 		} ${insert(`if (!__fx.settings.hidePropagandaPopup && !__fx.customLobby.isActive())`)} a.g.h(5);`)
+
+  // Invalid hostname detection avoidance
+  replaceCode(`this.hostnameIsValid = a.indexOf("territorial.io") >= 0;`, `this.hostnameIsValid = true;`)
 
   // for the custom lobby version
   try {

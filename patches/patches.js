@@ -49,12 +49,6 @@ function applyPatches(/** @type {ModUtils} */ { replace, replaceOne, replaceRawC
     replaceOne(/(\(6,"territorial\.io",6,")[^"]+"\),/g, "$1" + assets.fxClientLogo + "\"),");
     replaceOne(/(\(22,"logo",8,")[^"]+"\)/g, "$1" + assets.smallLogo + "\")");
 
-    // Add FX Client version info to the game version window
-    replaceRawCode(`ar.oa(4,1,new s8(__L(),c.gameVersion+"<br><a href='"+ah.aC5+"' target='_blank'>"+ah.aC5+"</a>",`,
-        `ar.oa(4,1,new s8(__L(),c.gameVersion+"<br><a href='"+ah.aC5+"' target='_blank'>"+ah.aC5+"</a>"
-+ "<br><br><b>" + "FX Client v" + __fx.version + "<br><a href='https://discord.gg/dyxcwdNKwK' target='_blank'>FX Client Discord server</a>"
-+ "<br><a href='https://github.com/fxclient/FXclient' target='_blank'>Github repository</a></b>",`);
-
     // Add update information
     replaceRawCode(`new k("🚀 New Game Update","The game was updated! Please reload the game.",!0,[`,
         `new k("🚀 New Game Update","The game was updated! Please reload the game."
@@ -170,10 +164,6 @@ function applyPatches(/** @type {ModUtils} */ { replace, replaceOne, replaceRawC
     replaceRawCode(`qr=Math.floor(100*f0+.5)+"%"`,
         `qr = (__fx.settings.detailedTeamPercentage ? (100*f0).toFixed(2) : Math.floor(100*f0+.5)) + "%"`)
     replaceRawCode(",fontSize=+dz*Math.min(f0,.37);", ",fontSize=(__fx.settings.detailedTeamPercentage ? 0.75 : 1)*dz*Math.min(f0,.37);")
-
-    // Invalid hostname detection avoidance
-    replaceRawCode(`,this.hostnameIsValid=0<=window.location.hostname.toLowerCase().indexOf("territorial.io"),`,
-        `,this.hostnameIsValid=true,`)
 
     console.log('Removing ads...');
     // Remove ads

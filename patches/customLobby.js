@@ -16,8 +16,10 @@ export default (/** @type {ModUtils} */ { modifyCode, insertCode, replaceCode, r
     insertCode(`this.y___ = function() { s___.t(5, 5); };
 	    this.a3a = function() { s___.w___(); aY.init(); }; /* here */`,
         `__fx.customLobby.setJoinFunction(() => { s___.w___(); aY.init(); });`)
-    replaceCode(`var aRc;if(l.dk){aRc="ws://localhost:"+(7130+a09)+"/";}else{aRc=aRX[0]+az.y.aQ9[a09]+aRX[1+l.dl];}aRW=new WebSocket(aRc)`,
-        `var aRc;if(l.dk){aRc="ws://localhost:"+(7130+a09)+"/";}else{aRc=aRX[0]+az.y.aQ9[a09]+aRX[1+l.dl];}aRW=new WebSocket(__fx.customLobby.isActive() && a09 === 1 ? __fx.customLobby.getSocketURL() : aRc)`)
+    modifyCode(`var l;
+        ${insert(`if (__fx.customLobby.isActive()) l = __fx.customLobby.getSocketURL();
+        else`)} if (b.c) { l = "ws://localhost:" + (7130 + d) + "/"; }`)
+
     // if the server is unreachable
     insertCode(`if (socketId === 0) { q.a08(3249); return; } /* here */`,
         `if (socketId === 1 && __fx.customLobby.isActive()) {

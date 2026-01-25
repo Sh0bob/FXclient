@@ -1,5 +1,5 @@
 import versionData from '../version.json';
-const { version, lastUpdated } = versionData;
+const { version, lastUpdated, isSignificant } = versionData;
 
 import settingsManager from './settings.js';
 import { clanFilter, leaderboardFilter } from "./clanFilters.js";
@@ -22,7 +22,7 @@ __fx.isCustomLobbyVersion = window.location.href.startsWith("https://fxclient.gi
 const savedVersion = localStorage.getItem("fx_version");
 if (savedVersion !== version && !__fx.isCustomLobbyVersion) {
   localStorage.setItem("fx_version", version);
-  if (savedVersion !== null) displayChangelog();
+  if (savedVersion !== null && isSignificant) displayChangelog();
 }
 
 __fx.settingsManager = settingsManager;

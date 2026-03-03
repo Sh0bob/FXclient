@@ -13,9 +13,21 @@ export default (/** @type {ModUtils} */ { modifyCode, insertCode, replaceCode, r
 		return -1;
 	}`, `if (__fx.customLobby.isActive()) return __fx.customLobby.getPlayerId();`);
 
-    insertCode(`this.y___ = function() { s___.t(5, 5); };
-	    this.a3a = function() { s___.w___(); aY.init(); }; /* here */`,
-        `__fx.customLobby.setJoinFunction(() => { s___.w___(); aY.init(); });`)
+    // set join function (more robust match, game code changes often)
+    waitForMinification(() => {
+      try {
+        replaceRawCode(
+          "s___.w___();aY.init()",
+          "s___.w___();aY.init();__fx.customLobby.setJoinFunction(()=>{s___.w___();aY.init();})"
+         );
+      } catch (e) {
+        // fallback if the minifier uses commas instead of semicolons
+        replaceRawCode(
+          "s___.w___(),aY.init()",
+          "s___.w___(),aY.init(),__fx.customLobby.setJoinFunction(()=>{s___.w___();aY.init();})"
+        );
+      }
+    });
     modifyCode(`var l;
         ${insert(`if (__fx.customLobby.isActive()) l = __fx.customLobby.getSocketURL();
         else`)} if (b.c) { l = "ws://localhost:" + (7130 + d) + "/"; }`)

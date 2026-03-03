@@ -94,11 +94,6 @@ const settingsManager = new (function () {
       note: "Increases the spawnpoint glow size for members of your clan",
     },
     {
-      for: "hidePropagandaPopup",
-      type: "checkbox",
-      label: "Hide propaganda popup"
-    },
-    {
       for: "detailedTeamPercentage", type: "checkbox",
       label: "Detailed team pie chart percentage",
       note: "For example: this would show 25.82% instead of 26% on the pie chart in team games"
@@ -194,6 +189,7 @@ const settingsManager = new (function () {
     this.applySettings();
     WindowManager.closeWindow("settings");
     discontinuedSettings.forEach((settingName) => delete settings[settingName]);
+    settings.hidePropagandaPopup = false;
     localStorage.setItem("fx_settings", JSON.stringify(settings));
     window.location.reload();
   };

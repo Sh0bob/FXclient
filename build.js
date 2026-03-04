@@ -75,7 +75,7 @@ async function patchGameCode() {
 			d = b.d - 4 * uiSizes.gap - this.a;`,
 		addToDictionary: ["uiSizes", "gap"]
 	}, {
-		code: `var dt=MenuManager.getState();if(dt===6){if(d===4211){/*...*/}}`,
+		code: `var dt=MenuManager.getState();if(6===dt){if(4211===d){/*...*/}}`,
 		addToDictionary: ["MenuManager", "getState"]
 	}];
 	codeSegments.forEach(({ code, addToDictionary }) => {
